@@ -36,6 +36,7 @@ http {
        #resolver 8.8.8.8;
        resolver 114.114.114.114;
        proxy_connect;
+       proxy_http_version 1.1;
        proxy_connect_allow            80 443 563;
        proxy_connect_connect_timeout  10s;
        proxy_connect_read_timeout     10s;
