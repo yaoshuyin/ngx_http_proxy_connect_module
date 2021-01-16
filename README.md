@@ -1,12 +1,16 @@
 ```bash
 $ wget http://nginx.org/download/nginx-1.18.0.tar.gz
 $ wget https://github.com/yaoshuyin/ngx_http_proxy_connect_module/archive/v0.0.1.tar.gz
+
 $ tar -xzvf nginx-1.18.0.tar.gz
 $ tar -xvf v0.0.1.tar.gz
-$ cd nginx-1.18.0/
-$ cd ../ngx_http_proxy_connect_module-0.0.1
+
+$ cd ngx_http_proxy_connect_module-0.0.1
 $ 下载 https://github.com/yaoshuyin/ngx_http_proxy_connect_module/blob/master/patch/proxy_connect_rewrite_1018.patch 的内容，存入patch/proxy_connect_rewrite_1018.patch
+
+$ cd ../nginx-1.18.0/
 $ patch -p1 < ../ngx_http_proxy_connect_module-0.0.1/patch/proxy_connect_rewrite_1018.patch
+
 $ ./configure --prefix=/opt/nginx_proxy --with-http_ssl_module --add-module=../ngx_http_proxy_connect_module-0.0.1/
 $ make && make install
 ```
