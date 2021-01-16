@@ -1,3 +1,55 @@
+```bash
+$ $ wget http://nginx.org/download/nginx-1.18.0.tar.gz https://github.com/yaoshuyin/ngx_http_proxy_connect_module/archive/v0.0.1.tar.gz
+$ tar -xzvf nginx-1.18.0.tar.gz
+$ tar -xvf v0.0.1.tar.gz
+$ cd nginx-1.18.0/
+$ patch -p1 < ../ngx_http_proxy_connect_module-0.0.1/patch/proxy_connect.patch
+$ ./configure --prefix=/opt/nginx_proxy --with-http_ssl_module --add-module=../ngx_http_proxy_connect_module-0.0.1/
+$ make && make install
+```
+
+cat /opt/nginx_proxy/conf/nginx.conf
+```nginx
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+       listen 8888;
+    
+       #resolver 8.8.8.8;
+       resolver 114.114.114.114;
+       proxy_connect;
+       proxy_connect_allow            80 443 563;
+       proxy_connect_connect_timeout  10s;
+       proxy_connect_read_timeout     10s;
+       proxy_connect_send_timeout     10s;
+     
+       location / {
+          proxy_pass $scheme://$http_host$request_uri;
+       }
+    }
+}
+```
+
+```bash
+$ /opt/nginx_proxy/sbin/nginx
+$ curl -x localhost:8888 https://www.baidu.com
+```
+
+..............................................................
+..............................................................
+
+
 name
 ====
 
@@ -202,10 +254,12 @@ Build nginx
 * Build nginx with this module from source:
 
 ```bash
-$ wget http://nginx.org/download/nginx-1.9.2.tar.gz
-$ tar -xzvf nginx-1.9.2.tar.gz
-$ cd nginx-1.9.2/
-$ patch -p1 < /path/to/ngx_http_proxy_connect_module/patch/proxy_connect.patch
+$ wget 
+$ wget http://nginx.org/download/nginx-1.18.0.tar.gz
+$ tar -xzvf nginx-1.18.0.tar.gz
+$ cd nginx-1.18.0/
+$ yum install openssl-devel pcre-devel zlib-devel gcc gcc+c++ make pcre-devel  zlib-devel patch 
+$ patch -p1 < ../ngx_http_proxy_connect_module/patch/proxy_connect.patch
 $ ./configure --add-module=/path/to/ngx_http_proxy_connect_module
 $ make && make install
 ```
@@ -216,11 +270,12 @@ Build as a dynamic module
 * Starting from nginx 1.9.11, you can also compile this module as a dynamic module, by using the `--add-dynamic-module=PATH` option instead of `--add-module=PATH` on the `./configure` command line.
 
 ```bash
-$ $ wget http://nginx.org/download/nginx-1.9.12.tar.gz
-$ tar -xzvf nginx-1.9.12.tar.gz
-$ cd nginx-1.9.12/
-$ patch -p1 < /path/to/ngx_http_proxy_connect_module/patch/proxy_connect.patch
-$ ./configure --add-dynamic-module=/path/to/ngx_http_proxy_connect_module
+$ $ wget http://nginx.org/download/nginx-1.18.0.tar.gz https://github.com/yaoshuyin/ngx_http_proxy_connect_module/archive/v0.0.1.tar.gz
+$ tar -xzvf nginx-1.18.0.tar.gz
+$ tar -xvf v0.0.1.tar.gz
+$ cd nginx-1.18.0/
+$ patch -p1 < ../ngx_http_proxy_connect_module-0.0.1/patch/proxy_connect.patch
+$ ./configure --prefix=/opt/nginx_proxy --with-http_ssl_module --add-module=../ngx_http_proxy_connect_module-0.0.1/
 $ make && make install
 ```
 
